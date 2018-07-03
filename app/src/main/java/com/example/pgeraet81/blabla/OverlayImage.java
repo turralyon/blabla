@@ -11,6 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class OverlayImage extends ScaleGestureDetector.SimpleOnScaleGestureListener implements View.OnTouchListener {
+
     private ScaleGestureDetector scaleGestureDetector;
 
     private ImageView item;
@@ -19,13 +20,13 @@ public class OverlayImage extends ScaleGestureDetector.SimpleOnScaleGestureListe
     private int minY = 0;
     private int maxX = 0;
     private int maxY = 0;
-    private float scaleFactor = 0.2f;
+    private float scaleFactor = 0.7f;
     private boolean scaleDone = true;
 
-    public OverlayImage(Context context, ImageView image, int width, int height, int minX, int minY) {
+    public OverlayImage(Context context, ImageView image, int windowwidth, int windowheight, int minX, int minY) {
         this.item = image;
-        this.maxX = width;
-        this.maxY = height;
+        this.maxX = windowwidth;
+        this.maxY = windowheight;
         this.minX = minX;
         this.minY = minY;
 
@@ -64,7 +65,7 @@ public class OverlayImage extends ScaleGestureDetector.SimpleOnScaleGestureListe
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if(item.getX() < 120 && item.getY() > maxY - 600){
+                if (item.getX() < 120 && item.getY() > maxY - 600) {
                     item.setImageResource(R.drawable.overlaynone);
                     item.setX(100);
                     item.setY(100);
@@ -80,9 +81,9 @@ public class OverlayImage extends ScaleGestureDetector.SimpleOnScaleGestureListe
         item.setX(x - item.getWidth() / 2);
         item.setY(y - item.getHeight() / 2);
 
-        if(item.getX() < 120 && item.getY() > maxY - 600){
+        if (item.getX() < 120 && item.getY() > maxY - 600) {
             item.setColorFilter(R.color.colorAccent);
-        } else{
+        } else {
             item.setColorFilter(null);
         }
     }
@@ -92,7 +93,7 @@ public class OverlayImage extends ScaleGestureDetector.SimpleOnScaleGestureListe
         scaleFactor *= detector.getScaleFactor();
 
         // Don't let the object get too small or too large.
-        scaleFactor = Math.max(0.2f, Math.min(scaleFactor, 4.0f));
+        scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 10.0f));
 
         item.setScaleX(scaleFactor);
         item.setScaleY(scaleFactor);
@@ -103,25 +104,24 @@ public class OverlayImage extends ScaleGestureDetector.SimpleOnScaleGestureListe
             public void run() {
                 scaleDone = true;
             }
-        },600);
+        }, 500);
         return true;
     }
 
-    public void setImageResource(int resource){
+    public void setImageResource(int resource) {
         this.item.setImageResource(resource);
         item.setColorFilter(null);
     }
 
-    public ImageView getImage(){
+    public ImageView getImage() {
         return this.item;
     }
 
-    public float getX(){
+    public float getX() {
         return item.getX();
     }
-    public float getY(){
+
+    public float getY() {
         return item.getY();
     }
-
-
 }

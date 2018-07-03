@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int SELECT_IMAGE = 121;
     private static final int Create_IMAGE = 321;
 
-    
+
     Uri picUri;
     Bitmap myBitmap;
     private ArrayList<String> permission;
