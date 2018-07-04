@@ -148,12 +148,13 @@ public class DisplayAndEditPictureActivity extends AppCompatActivity implements 
 //    }
 //}
     public Uri saveImage() {
-        final File myDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/MVDM");
+        final File myDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp");
         boolean success = false;
+        myDir.deleteOnExit();
         final Random generator = new Random();
         int n = 10000;
         n = generator.nextInt(n);
-        final String fname = "image" + n + ".png";
+        final String fname = "temp" + n + ".png";
         myDir.mkdirs();
         File image = new File(myDir, fname);
         imageViewPicture.setDrawingCacheEnabled(true);
