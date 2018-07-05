@@ -78,8 +78,8 @@ public class AddDateActivity extends AppCompatActivity implements View.OnClickLi
                 Intent intentShare = new Intent(Intent.ACTION_SEND);
                 intentShare.setType("image/png");
                 intentShare.putExtra(Intent.EXTRA_STREAM, ResultFileUri);
-                intentShare.putExtra(Intent.EXTRA_SUBJECT,"" );
-                intentShare.putExtra(Intent.EXTRA_TEXT, "Werknemer van de Maand is:" + txtName.getText().toString());
+                intentShare.putExtra(Intent.EXTRA_SUBJECT,"Werknemer van de Maand!!!" );
+                intentShare.putExtra(Intent.EXTRA_TEXT, "De werknemer van de maand is:" + txtName.getText().toString());
                 startActivity(Intent.createChooser(intentShare, "Delen met: "));
 
                 break;
