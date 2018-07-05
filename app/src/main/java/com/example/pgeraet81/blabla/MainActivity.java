@@ -153,16 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // collect all camera intents
         Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-//        List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
-//        for (ResolveInfo res : listCam) {
-//            Intent intent = new Intent(captureIntent);
-//            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-//            intent.setPackage(res.activityInfo.packageName);
-//            if (outputFileUri != null) {
-//                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-//            }
-//            allIntents.add(intent);
-//        }
+
         return captureIntent;
     }
     public Uri getPickImageResultUri(Intent data) {

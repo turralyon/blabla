@@ -20,7 +20,7 @@ public class OverlayImage extends ScaleGestureDetector.SimpleOnScaleGestureListe
     private int minY = 0;
     private int maxX = 0;
     private int maxY = 0;
-    private float scaleFactor = 0.7f;
+    private float scaleFactor = 0.45f;
     private boolean scaleDone = true;
 
     public OverlayImage(Context context, ImageView image, int windowwidth, int windowheight, int minX, int minY) {
@@ -93,7 +93,7 @@ public class OverlayImage extends ScaleGestureDetector.SimpleOnScaleGestureListe
         scaleFactor *= detector.getScaleFactor();
 
         // Don't let the object get too small or too large.
-        scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 10.0f));
+        scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5.0f));
 
         item.setScaleX(scaleFactor);
         item.setScaleY(scaleFactor);

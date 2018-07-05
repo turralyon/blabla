@@ -3,15 +3,14 @@ package com.example.pgeraet81.blabla;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,7 +22,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Random;
 
 public class AddDateActivity extends AppCompatActivity implements View.OnClickListener {
@@ -37,8 +35,8 @@ public class AddDateActivity extends AppCompatActivity implements View.OnClickLi
     private Month month;
     private ImageButton btnShare;
     private Button btnDate;
-    private static final int WIDTH = 864;
-    private static final int HEIGHT = 1536;
+    private int width = 864;
+    private int height = 1536;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +53,15 @@ public class AddDateActivity extends AppCompatActivity implements View.OnClickLi
         btnDate = findViewById(R.id.btnDate);
         btnDate.setOnClickListener(this);
 
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        height = displayMetrics.heightPixels;
+        width = displayMetrics.widthPixels;
+
         canvas = null;
         try {
             bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), picture);
-            bitmap = Bitmap.createScaledBitmap(bitmap, WIDTH, HEIGHT, false);
+            bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
             Bitmap mutuableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
             canvas = new Canvas(mutuableBitmap);
             imageViewTemp.setImageBitmap(mutuableBitmap);

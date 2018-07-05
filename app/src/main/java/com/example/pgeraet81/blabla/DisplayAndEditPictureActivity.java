@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,12 +28,13 @@ import java.util.Random;
 public class DisplayAndEditPictureActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private static final int WIDTH = 864;
-    private static final int HEIGHT = 1536;
+    private int width;
+    private int height;
+    private ConstraintLayout layout;
     private Uri tempFileUri;
     private ArrayList<OverlayImage> overlayItems = new ArrayList<>();
     private Bitmap bitmap;
-    private Canvas canvas;
+    private Bitmap mutuableBitmap;
     private Button btnConfetti;
     private Button btnHat;
     private Button btnMoustache;
@@ -73,21 +76,30 @@ public class DisplayAndEditPictureActivity extends AppCompatActivity implements 
         imageViewMoustache.setVisibility(View.INVISIBLE);
         imageViewHat.setVisibility(View.INVISIBLE);
         imageViewConfetti.setVisibility(View.INVISIBLE);
-        canvas = null;
+        layout = findViewById(R.id.layoutView);
+
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        height = displayMetrics.heightPixels;
+        width = displayMetrics.widthPixels;
 
         try {
             bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), picture);
-            bitmap = Bitmap.createScaledBitmap(bitmap, WIDTH, HEIGHT, true);
-            canvas = new Canvas(bitmap);
-            imageViewPicture.setImageBitmap(bitmap);
+            bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+            mutuableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            Canvas canvas = new Canvas(mutuableBitmap);
+
+            imageViewPicture.setImageBitmap(mutuableBitmap);
+
         } catch (Exception e) {
             Toast.makeText(this, "Error getting a picture", Toast.LENGTH_LONG).show();
         }
 
-        int minX = (int) imageViewPicture.getX() - WIDTH;
-        int minY = (int) imageViewPicture.getY() - HEIGHT;
-        int maxX = (int) imageViewPicture.getX() + WIDTH;
-        int maxY = (int) imageViewPicture.getY() + HEIGHT;
+        int minX = (int) imageViewPicture.getX() - width;
+        int minY = (int) imageViewPicture.getY() - height;
+        int maxX = (int) imageViewPicture.getX() + width;
+        int maxY = (int) imageViewPicture.getY() + height;
 
 
         overlayItems.add(new OverlayImage(this, imageViewConfetti, maxX, maxY, minX, minY));
@@ -129,25 +141,15 @@ public class DisplayAndEditPictureActivity extends AppCompatActivity implements 
             case R.id.btnNext:
                 StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
                 StrictMode.setVmPolicy(builder.build());
-                Uri tempFileUri = saveImage();
+                Uri tempFileUri = saveImage(v);
 
                 startAddDateActivity(tempFileUri);
 
         }
     }
 
-    //    private File createImageFile() throws IOException {
-//        // Create an image file name
-//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-//        String imageFileName = "JPEG_" + timeStamp;
-//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-//        File image = File.createTempFile(imageFileName,".png",storageDir);
-//
-//
-//        return image;
-//    }
-//}
-    public Uri saveImage() {
+
+    public Uri saveImage(View view) {
         final File myDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp");
         boolean success = false;
         myDir.deleteOnExit();
@@ -157,26 +159,17 @@ public class DisplayAndEditPictureActivity extends AppCompatActivity implements 
         final String fname = "temp" + n + ".png";
         myDir.mkdirs();
         File image = new File(myDir, fname);
-        imageViewPicture.setDrawingCacheEnabled(true);
+
         tempFileUri = Uri.fromFile(image);
         myDir.setReadable(true);
         myDir.setWritable(true);
-
+        image.deleteOnExit();
 
         // Encode the file as a PNG image.
         FileOutputStream outStream;
         try {
             outStream = new FileOutputStream(image);
-
-            for (OverlayImage x : overlayItems) {
-                ImageView imageView = x.getImage();
-                imageView.buildDrawingCache();
-                Bitmap bitmap = imageView.getDrawingCache();
-                canvas.drawBitmap(bitmap, x.getX(), x.getY(), new Paint());
-
-            }
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-            /* 100 to keep full quality of the image */
+            getScreenViewBitmap(view).compress(Bitmap.CompressFormat.PNG, 100, outStream);
             outStream.flush();
             outStream.close();
             success = true;
@@ -209,4 +202,16 @@ public class DisplayAndEditPictureActivity extends AppCompatActivity implements 
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity(intent);
     }
+
+
+
+
+    private Bitmap getScreenViewBitmap(View v) {
+
+        layout.setDrawingCacheEnabled(true);
+        layout.buildDrawingCache();
+        Bitmap bm1 = layout.getDrawingCache();
+        return bm1;
+    }
 }
+
